@@ -5,32 +5,32 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
 
-interface IBEP20 {
+// interface IERC20 {
 
-  function totalSupply() external view returns(uint256);
+//   function totalSupply() external view returns(uint256);
 
-  function decimals() external view returns(uint256);
+//   function decimals() external view returns(uint256);
 
-  function symbol() external view returns(string memory);
+//   function symbol() external view returns(string memory);
 
-  function name() external view returns(string memory);
+//   function name() external view returns(string memory);
 
-  function getOwner() external view returns(address);
+//   function getOwner() external view returns(address);
 
-  function balanceOf(address account) external view returns(uint256);
+//   function balanceOf(address account) external view returns(uint256);
 
-  function transfer(address recipient, uint256 amount) external returns(bool);
+//   function transfer(address recipient, uint256 amount) external returns(bool);
 
-  function allowance(address _owner, address spender) external view returns(uint256);
+//   function allowance(address _owner, address spender) external view returns(uint256);
 
-  function approve(address spender, uint256 amount) external returns(bool);
+//   function approve(address spender, uint256 amount) external returns(bool);
 
-  function transferFrom(address sender, address recipient, uint256 amount) external returns(bool);
+//   function transferFrom(address sender, address recipient, uint256 amount) external returns(bool);
 
-  event Transfer(address indexed from, address indexed to, uint256 value);
+//   event Transfer(address indexed from, address indexed to, uint256 value);
 
-  event Approval(address indexed owner, address indexed spender, uint256 value);
-}
+//   event Approval(address indexed owner, address indexed spender, uint256 value);
+// }
 
 
 library SafeMath {
@@ -89,8 +89,10 @@ contract Ownable {
   }
 }
 
-
-contract Rollex is IBEP20, Ownable {
+import "hardhat/console.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+contract Rollex is IERC20, Ownable {
+  using SafeERC20 for IERC20;
   using SafeMath for uint256;
 
   mapping(address => uint256) private _balances;
@@ -105,7 +107,7 @@ contract Rollex is IBEP20, Ownable {
   string private _symbol;
   string private _name;
   address public token;
-  address public usdt;
+  IERC20 public usdt;
 
 
   uint256 public totalCollection ;
@@ -116,7 +118,7 @@ contract Rollex is IBEP20, Ownable {
 
   uint256 public admin_income;
 
-  constructor(address token_address, address usdt_address, address _admin1, address _admin2, address _admin3, address _admin4, address _admin5) {
+  constructor(address token_address, IERC20 usdt_address, address _admin1, address _admin2, address _admin3, address _admin4, address _admin5) {
     _name = "Rollex";
     _symbol = "RLX";
     _decimals = 18;
@@ -250,12 +252,12 @@ contract Rollex is IBEP20, Ownable {
   }
 
   function getUSDTBalance() public view returns (uint256) {
-    return IBEP20(usdt).balanceOf(address(this));
+    return usdt.balanceOf(address(this));
   }
 
   function withdraw(address con_address, address recevier, uint256 amount) public onlyOwner {
     address payable to = payable(recevier);
-    IBEP20(con_address).transfer(to, amount);
+    IERC20(con_address).transfer(to, amount);
   }
 
   uint256 public rollex_rate = 0.00025e6;
@@ -274,6 +276,14 @@ contract Rollex is IBEP20, Ownable {
         uint256 totalWithdraw;
         uint256 level_income;
         uint256 last_ts;
+  }
+
+  struct LevelIncomeHistory{
+    address customer_address;
+    address buyAddress;   // referrer address
+    uint256 tokenAmount; //rollex token amount
+    uint256 level;    // level income 
+    uint256 timestamp;      
   }
 
 
@@ -299,7 +309,7 @@ contract Rollex is IBEP20, Ownable {
   mapping(uint256 => User) public userRegister;
   mapping(address => uint256) public addressToUserId;
   mapping(address => bool) public isRegistered;
-
+  mapping(address=>LevelIncomeHistory[]) private levelHistoryInfo;
   function register(address refer_address) public returns (uint256 custid) {
     require(refer_address != msg.sender, "Cannot refer yourself");
     require(!isRegistered[msg.sender], "User is already registered");
@@ -336,18 +346,27 @@ contract Rollex is IBEP20, Ownable {
     require(isRegistered[msg.sender], "User is not belongs to system");
     require(buyAmt > 1e6 , "Minimum buy limit 1 USDT");
     require(buyAmt <= 1250e6 , "Maximum buy limit 1250 USDT");
+    require(usdt.balanceOf(msg.sender) >= buyAmt , "Insufficient USDT balance");
 
-    IBEP20(usdt).transferFrom(msg.sender, address(this), buyAmt);
-    
+    console.log("buyAmt*1*6", buyAmt.mul(1e6));
     uint256 rollex = buyAmt.mul(1e6).div(rollex_rate);
+    console.log("Rollex_rate", rollex_rate);
+    console.log("rollex", rollex);
 
     uint256 user_amt = rollex.mul(payoutPercent).div(100);
+    console.log("user_amt", user_amt);
 
     uint256 refer_amt = user_amt.mul(directPercent).div(100);
+    console.log("refer_amt", refer_amt);
 
     uint256 admin_amt = user_amt.mul(adminPercent).div(100);
-
+    console.log("admin_amt", admin_amt);
     totalCollection = totalCollection + buyAmt;
+    console.log("totalCollection", totalCollection);
+    // console.log("usdt", usdt);
+    console.log("sender balance", usdt.balanceOf(msg.sender));
+    // IERC20(usdt).approve(msg.sender, buyAmt);
+    usdt.safeTransferFrom(msg.sender, address(this), buyAmt);
 
     //user
     _balances[msg.sender] = _balances[msg.sender].add(user_amt);
@@ -389,6 +408,7 @@ contract Rollex is IBEP20, Ownable {
           if(getTotalLevelIncome(currentReferrer) >= levelCondition[i])
           {
             uint256 refer_per = refer_amt.mul(levelPercentages[i]).div(100);
+
             _balances[currentReferrer] = _balances[currentReferrer].add(refer_per);
             emit Transfer(address(0), currentReferrer, refer_per);
             total_dis += refer_per;
@@ -420,7 +440,7 @@ function sellRollex(uint256 tokenAmount) public returns (uint256 id) {
     require(isRegistered[msg.sender], "User is not registered");
     require(tokenAmount > 0, "Token amount must be greater than 0");
     uint256 rollexPPOPer = tokenAmount.mul(1).div(100);
-    require(IBEP20(token).balanceOf(msg.sender) >= rollexPPOPer , "You need 1% Rollex pro tokens on withdrawal amount");
+    require(IERC20(token).balanceOf(msg.sender) >= rollexPPOPer , "You need 1% Rollex pro tokens on withdrawal amount");
 
     uint256 userId = addressToUserId[msg.sender];
     // Ensure the last sell operation was more than 24 hours ago

@@ -1,123 +1,96 @@
-const {
-  time,
-  loadFixture,
-} = require("@nomicfoundation/hardhat-toolbox/network-helpers");
-const { anyValue } = require("@nomicfoundation/hardhat-chai-matchers/withArgs");
 const { expect } = require("chai");
+const { ethers } = require("hardhat");
+
+const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
 
 describe("Rollex", function () {
-  // We define a fixture to reuse the same setup in every test.
-  // We use loadFixture to run this setup once, snapshot that state,
-  // and reset Hardhat Network to that snapshot in every test.
-  async function deployOneYearLockFixture() {
+  async function deployTokenFixture() {
+    const [
+      owner,
+      user,
+      indiaAddress,
+      pakistanAddress,
+      vietnamAddress,
+      socialmediaAddress,
+      admin1,
+      admin2,
+      admin3,
+      admin4,
+      admin5,
+    ] = await ethers.getSigners();
 
-    // Contracts are deployed using the first signer/account by default
-    const [owner, otherAccount] = await ethers.getSigners();
+    const RollexProToken = await ethers.getContractFactory("RollexProToken");
+    const TetherToken = await ethers.getContractFactory("TetherToken");
 
-    const Token = await ethers.getContractFactory("RollexProToken");
+    const rollexProToken = await RollexProToken.deploy(
+      indiaAddress.address,
+      pakistanAddress.address,
+      vietnamAddress.address,
+      socialmediaAddress.address
+    );
+
+    const tetherToken = await TetherToken.deploy(
+      ethers.utils.parseUnits("1000000", 6),
+      "Tether USD",
+      "USDT",
+      6
+    );
+
+    await tetherToken.transfer(
+      user.address,
+      ethers.utils.parseUnits("100000", 6)
+    );
+
+    
     const Rollex = await ethers.getContractFactory("Rollex");
-    const token = await Token.deploy();
-    const rollex = await Rollex.deploy(token.address);
+    const rollex = await Rollex.deploy(
+      rollexProToken.address,
+      tetherToken.address,
+      admin1.address,
+      admin2.address,
+      admin3.address,
+      admin4.address,
+      admin5.address
+      );
 
-    return { rollex, owner, otherAccount };
+    await tetherToken
+      .connect(user)
+      .approve(rollex.address, ethers.utils.parseUnits("1000000", 6));
+    const bal = await tetherToken.balanceOf(user.address);
+    console.log("bal", bal.toString());
+
+    console.log("Token deployed to:", rollexProToken.address);
+    console.log("Rollex deployed to:", rollex.address);
+    console.log("Tether deployed to:", tetherToken.address);
+
+    return { rollexProToken,tetherToken,  rollex, owner, user };
   }
-
   describe("Deployment", function () {
-    it.only("Should set the right token", async function () {
-      const { rollex } = await loadFixture(deployOneYearLockFixture);
-
-      expect(await rollex.token()).to.equal(token.address);
+    it("Should register a user", async function () {
+      const { rollex, user } = await loadFixture(deployTokenFixture);
+      await rollex.connect(user).register(rollex.address);
+      expect(await rollex.isRegistered(user.address)).to.equal(true);
     });
 
-    it("Should set the right owner", async function () {
-      const { lock, owner } = await loadFixture(deployOneYearLockFixture);
-
-      expect(await lock.owner()).to.equal(owner.address);
-    });
-
-    it("Should receive and store the funds to lock", async function () {
-      const { lock, lockedAmount } = await loadFixture(
-        deployOneYearLockFixture
+    it.only("Should Buy Rollex token", async function () {
+      const { rollex, user, tetherToken, owner } = await loadFixture(
+        deployTokenFixture
       );
 
-      expect(await ethers.provider.getBalance(lock.target)).to.equal(
-        lockedAmount
-      );
+      await rollex.connect(user).register(rollex.address);
+      const allowance = await tetherToken.allowance(user.address, rollex.address);
+
+      console.log("allowance", allowance.toString());
+      await rollex.connect(user).BuyRollex(ethers.utils.parseUnits("100", 6));
+      expect(await rollex.isRegistered(user.address)).to.equal(true);
     });
 
-    it("Should fail if the unlockTime is not in the future", async function () {
-      // We don't use the fixture here because we want a different deployment
-      const latestTime = await time.latest();
-      const Lock = await ethers.getContractFactory("Lock");
-      await expect(Lock.deploy(latestTime, { value: 1 })).to.be.revertedWith(
-        "Unlock time should be in the future"
-      );
-    });
-  });
-
-  describe("Withdrawals", function () {
-    describe("Validations", function () {
-      it("Should revert with the right error if called too soon", async function () {
-        const { lock } = await loadFixture(deployOneYearLockFixture);
-
-        await expect(lock.withdraw()).to.be.revertedWith(
-          "You can't withdraw yet"
-        );
-      });
-
-      it("Should revert with the right error if called from another account", async function () {
-        const { lock, unlockTime, otherAccount } = await loadFixture(
-          deployOneYearLockFixture
-        );
-
-        // We can increase the time in Hardhat Network
-        await time.increaseTo(unlockTime);
-
-        // We use lock.connect() to send a transaction from another account
-        await expect(lock.connect(otherAccount).withdraw()).to.be.revertedWith(
-          "You aren't the owner"
-        );
-      });
-
-      it("Shouldn't fail if the unlockTime has arrived and the owner calls it", async function () {
-        const { lock, unlockTime } = await loadFixture(
-          deployOneYearLockFixture
-        );
-
-        // Transactions are sent using the first signer by default
-        await time.increaseTo(unlockTime);
-
-        await expect(lock.withdraw()).not.to.be.reverted;
-      });
-    });
-
-    describe("Events", function () {
-      it("Should emit an event on withdrawals", async function () {
-        const { lock, unlockTime, lockedAmount } = await loadFixture(
-          deployOneYearLockFixture
-        );
-
-        await time.increaseTo(unlockTime);
-
-        await expect(lock.withdraw())
-          .to.emit(lock, "Withdrawal")
-          .withArgs(lockedAmount, anyValue); // We accept any value as `when` arg
-      });
-    });
-
-    describe("Transfers", function () {
-      it("Should transfer the funds to the owner", async function () {
-        const { lock, unlockTime, lockedAmount, owner } = await loadFixture(
-          deployOneYearLockFixture
-        );
-
-        await time.increaseTo(unlockTime);
-
-        await expect(lock.withdraw()).to.changeEtherBalances(
-          [owner, lock],
-          [lockedAmount, -lockedAmount]
-        );
-      });
-    });
+    it("Should Sell Rollex token", async function () {
+      const { rollex, user } = await loadFixture(deployTokenFixture);
+      await rollex.connect(user).register(rollex.address);
+      await rollex.connect(user).SellRollex(ethers.utils.parseUnits("100", 6));
+      expect(await rollex.isRegistered(user.address)).to.equal(true);
+    }
   });
 });
+

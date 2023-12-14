@@ -132,10 +132,10 @@ contract RollexProToken is IBEP20, Ownable, StandardToken  {
   uint256 public socialmediaFee  = 1;
   uint256 public burnPercent = 1;
 
-  address private indiaAddress = 0xaFF55d7B23d0Cdefd04fACE7D818429fa38bB0F8;
-  address private pakistanAddress  = 0x72ec6C410248cC631F3Ae50d1d5e6b692F3D8e1b;
-  address private vietnamAddress  = 0x46ac1C2f150758fA47461491Fa2B69838329CD9d;
-  address private socialmediaAddress  = 0x0e1125E0e601d22Fe774fdb3350AC2B83e0D48CA;
+  address private indiaAddress;  //15
+  address private pakistanAddress; //16
+  address private vietnamAddress;  //17
+  address private socialmediaAddress; //18
 
   modifier onlyPayloadSize(uint size) {
     require(!(msg.data.length < size + 4));
@@ -143,7 +143,7 @@ contract RollexProToken is IBEP20, Ownable, StandardToken  {
   }
 
 
-  constructor()  {
+  constructor(address _indiaAddress, address _pakistanAddress, address _vietnamAddress, address _socialmediaAddress)  {
     _name = "Rollex Pro Token";
     _symbol = "RLXT";
     _decimals = 18;
@@ -152,6 +152,11 @@ contract RollexProToken is IBEP20, Ownable, StandardToken  {
     emit Transfer(address(0), msg.sender, _totalSupply);
     _burnlimit= 10000000 * 10 ** _decimals;
     ExcludeFromFee(msg.sender);
+
+    indiaAddress = _indiaAddress;
+    pakistanAddress = _pakistanAddress;
+    vietnamAddress = _vietnamAddress;
+    socialmediaAddress = _socialmediaAddress;
   }
 
   function getOwner() external view returns (address) {
