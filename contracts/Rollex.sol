@@ -105,6 +105,8 @@ contract Rollex is IBEP20, Ownable {
   string private _symbol;
   string private _name;
   address public token;
+  address public usdt;
+
 
   uint256 public totalCollection ;
   uint256 public totalMint ;
@@ -114,7 +116,7 @@ contract Rollex is IBEP20, Ownable {
 
   uint256 public admin_income;
 
-  constructor(address token_address) {
+  constructor(address token_address, address usdt_address, address _admin1, address _admin2, address _admin3, address _admin4, address _admin5) {
     _name = "Rollex";
     _symbol = "RLX";
     _decimals = 18;
@@ -124,13 +126,14 @@ contract Rollex is IBEP20, Ownable {
     totalCollection = 0;
     totalMint = 0;
     token = token_address;
+    usdt = usdt_address;
     isRegistered[address(this)] = true;
 
-    admin_distribution[1] = 0xaF882024b1b99A5F0C58B7524C054B3F20f84e2a;
-    admin_distribution[2] = 0xbfa158ECce12d2d5D4Ca55F9539e39956C86097C;
-    admin_distribution[3] = 0x68bba82b87A8F86E56984F8D4F033b05C666226f;
-    admin_distribution[4] = 0x0e959B7d8fDaa51ad7359A6d29B54f0887D4CcC6;
-    admin_distribution[5] = 0x394A5675fbC807a3d68C330657B2ce51A3461E2E;
+    admin_distribution[1] = _admin1;
+    admin_distribution[2] = _admin2;
+    admin_distribution[3] = _admin3;
+    admin_distribution[4] = _admin4;
+    admin_distribution[5] = _admin5;
 
     levelPercentages[1] = 10;
     levelPercentages[2] = 6;
@@ -158,33 +161,32 @@ contract Rollex is IBEP20, Ownable {
     levelPercentages[24] = 1;
     levelPercentages[25] = 1;
 
-    levelCondition[1] = 0 ether;
-    levelCondition[2] = 0.4 ether;
-    levelCondition[3] = 0.6 ether;
-    levelCondition[4] = 0.8 ether;
-    levelCondition[5] = 1 ether;
-    levelCondition[6] = 1.2 ether;
-    levelCondition[7] = 1.4 ether;
-    levelCondition[8] = 1.6 ether;
-    levelCondition[9] = 1.8 ether;
-    levelCondition[10] = 2 ether;
-    levelCondition[11] = 2.2 ether;
-    levelCondition[12] = 2.4 ether;
-    levelCondition[13] = 2.6 ether;
-    levelCondition[14] = 2.8 ether;
-    levelCondition[15] = 3 ether;
-    levelCondition[16] = 3.2 ether;
-    levelCondition[17] = 3.4 ether;
-    levelCondition[18] = 3.6 ether;
-    levelCondition[19] = 3.8 ether;
-    levelCondition[20] = 4 ether;
-    levelCondition[21] = 4.2 ether;
-    levelCondition[22] =  4.4 ether;
-    levelCondition[23] =  4.6 ether;
-    levelCondition[24] =  4.8 ether;
-    levelCondition[25] =  5 ether;
+    levelCondition[1] = 0e6;
+    levelCondition[2] = 100e6;
+    levelCondition[3] = 150e6;
+    levelCondition[4] = 200e6;
+    levelCondition[5] = 250e6;
+    levelCondition[6] = 300e6;
+    levelCondition[7] = 350e6;
+    levelCondition[8] = 400e6;
+    levelCondition[9] = 450e6;
+    levelCondition[10] = 500e6;
+    levelCondition[11] = 550e6;
+    levelCondition[12] = 600e6;
+    levelCondition[13] = 650e6;
+    levelCondition[14] = 700e6;
+    levelCondition[15] = 750e6;
+    levelCondition[16] = 800e6;
+    levelCondition[17] = 850e6;
+    levelCondition[18] = 900e6;
+    levelCondition[19] = 950e6;
+    levelCondition[20] = 1000e6;
+    levelCondition[21] = 1050e6;
+    levelCondition[22] =  1100e6;
+    levelCondition[23] =  1150e6;
+    levelCondition[24] =  1200e6;
+    levelCondition[25] =  1250e6;
   }
-
 
   function getOwner() external view returns(address) {
     return _owner;
@@ -247,8 +249,8 @@ contract Rollex is IBEP20, Ownable {
     emit Approval(owner, spender, amount);
   }
 
-  function getBnbBalance() public view returns (uint256) {
-    return address(this).balance;
+  function getUSDTBalance() public view returns (uint256) {
+    return IBEP20(usdt).balanceOf(address(this));
   }
 
   function withdraw(address con_address, address recevier, uint256 amount) public onlyOwner {
@@ -256,7 +258,7 @@ contract Rollex is IBEP20, Ownable {
     IBEP20(con_address).transfer(to, amount);
   }
 
-  uint256 public rollex_rate = 1000000000000;
+  uint256 public rollex_rate = 0.00025e6;
 
   uint256 public distribute_level = 25;
 
@@ -277,17 +279,17 @@ contract Rollex is IBEP20, Ownable {
 
   struct Buyhistory {
     address cust_address;
-    uint256 bnb_amt;
+    uint256 usdt_amt;
     uint256 token_to_user;
     uint256 distribution_amt;
     uint256 distrbution_to_per_level;
     uint256 admin_amt;
   }
 
-    struct Sellhistory {
+  struct Sellhistory {
     address cust_address;
     uint256 token;
-    uint256 bnb_amt;
+    uint256 usdt_amt;
     uint256 admin_amt;
     uint256 final_amt;
   }
@@ -330,12 +332,14 @@ contract Rollex is IBEP20, Ownable {
   }
 
 
-  function BuyRollex () payable public returns (uint256 id) {
+  function BuyRollex (uint256 buyAmt) public returns (uint256 id) {
     require(isRegistered[msg.sender], "User is not belongs to system");
-    require(msg.value > 1000000000000 , "Minimum buy limit");
-    require(msg.value <= 5000000000000000000 , "Maximum buy limit");
+    require(buyAmt > 1e6 , "Minimum buy limit 1 USDT");
+    require(buyAmt <= 1250e6 , "Maximum buy limit 1250 USDT");
+
+    IBEP20(usdt).transferFrom(msg.sender, address(this), buyAmt);
     
-    uint256 rollex = msg.value.mul(1 ether).div(rollex_rate);
+    uint256 rollex = buyAmt.mul(1e6).div(rollex_rate);
 
     uint256 user_amt = rollex.mul(payoutPercent).div(100);
 
@@ -343,7 +347,7 @@ contract Rollex is IBEP20, Ownable {
 
     uint256 admin_amt = user_amt.mul(adminPercent).div(100);
 
-    totalCollection = totalCollection + msg.value;
+    totalCollection = totalCollection + buyAmt;
 
     //user
     _balances[msg.sender] = _balances[msg.sender].add(user_amt);
@@ -394,7 +398,7 @@ contract Rollex is IBEP20, Ownable {
       currentReferrer = userRegister[nextId].referral_address;
     }
 
-    userRegister[userId].totalDeposit = userRegister[userId].totalDeposit.add(msg.value);
+    userRegister[userId].totalDeposit = userRegister[userId].totalDeposit.add(buyAmt);
 
     totalMint = totalMint + user_amt + total_dis + admin_amt;
     _totalSupply = _totalSupply + user_amt + total_dis + admin_amt;
@@ -402,7 +406,7 @@ contract Rollex is IBEP20, Ownable {
 
     id = ++buyId;
     buyRecord[id].cust_address = msg.sender;
-    buyRecord[id].bnb_amt = msg.value;
+    buyRecord[id].usdt_amt = buyAmt;
     buyRecord[id].token_to_user = user_amt;
     buyRecord[id].distribution_amt = total_dis;
     buyRecord[id].distrbution_to_per_level = 0;
@@ -422,44 +426,44 @@ function sellRollex(uint256 tokenAmount) public returns (uint256 id) {
     // Ensure the last sell operation was more than 24 hours ago
     require(userRegister[userId].last_ts + 1 days <= block.timestamp, "Sell operation can only be performed once every 24 hours");
 
-    uint256 bnbAmount = tokenAmount.mul(rollex_rate).div(1 ether);
-    uint256 adminServiceCharge = bnbAmount.mul(15).div(100); // 15% of bnbAmount
-    bnbAmount = bnbAmount.sub(adminServiceCharge);
+    uint256 usdtAmount = tokenAmount.mul(rollex_rate).div(1 ether);
+    uint256 adminServiceCharge = usdtAmount.mul(15).div(100); // 15% of usdtAmount
+    usdtAmount = usdtAmount.sub(adminServiceCharge);
 
-    // Check if the contract has enough BNB to proceed with the withdrawal
-    require(address(this).balance >= bnbAmount, "Not enough BNB in the contract to proceed with the withdrawal");
+    // Check if the contract has enough USDT to proceed with the withdrawal
+    require(address(this).balance >= usdtAmount, "Not enough USDT in the contract to proceed with the withdrawal");
 
-    // Ensure the bnbAmount is less than or equal to the total deposit of the user
-    require(bnbAmount <= userRegister[userId].totalDeposit.mul(3), "Cannot withdraw more than 3x total deposit at a time");
+    // Ensure the usdtAmount is less than or equal to the total deposit of the user
+    require(usdtAmount <= userRegister[userId].totalDeposit.mul(3), "Cannot withdraw more than 3x total deposit at a time");
 
-    // Ensure the bnbAmount is greater than or equal to 0.01 BNB
-    require(bnbAmount >= 0.01 ether, "Minimum BNB withdraw limit is 0.01");
+    // Ensure the usdtAmount is greater than or equal to 1 USDT
+    require(usdtAmount >= 1e6, "Minimum USDT  withdraw limit is 1");
 
-    // Ensure the bnbAmount is less than or equal to 5 BNB
-    require(bnbAmount <= 5 ether, "Maximum BNB withdraw limit is 5");
+    // Ensure the usdtAmount is less than or equal to 1250 USDT
+    require(usdtAmount <= 1250e6, "Maximum USDT withdraw limit is 1250");
 
     // Burn the token amount and update total supply
     _balances[msg.sender] = _balances[msg.sender].sub(tokenAmount);
     _totalSupply = _totalSupply.sub(tokenAmount);
     emit Transfer(msg.sender, address(0), tokenAmount); // Emit a transfer event to the zero address to signify burning
 
-    // Send BNB to the user's address
-    payable(msg.sender).transfer(bnbAmount);
+    // Send USDT to the user's address
+    payable(msg.sender).transfer(usdtAmount);
     rollex_rate = address(this).balance.mul(1 ether).div(_totalSupply);
 
     // Update the last sell timestamp
     userRegister[userId].last_ts = block.timestamp;
     // update the totalwithdraw
-    userRegister[userId].totalWithdraw = bnbAmount;
+    userRegister[userId].totalWithdraw = usdtAmount;
    
    // Record the sell history
     id = ++sellId;
     sellRecord[id] = Sellhistory({
         cust_address: msg.sender,
         token: tokenAmount,
-        bnb_amt: bnbAmount,
+        usdt_amt: usdtAmount,
         admin_amt: adminServiceCharge,
-        final_amt: bnbAmount
+        final_amt: usdtAmount
     });
 
     return id;
