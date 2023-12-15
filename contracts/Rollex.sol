@@ -210,7 +210,7 @@ contract Rollex is IERC20, Ownable {
     return _totalSupply;
   }
 
-  function balanceOf(address account) external view returns(uint256) {
+  function balanceOf(address account) public view returns(uint256) {
     return _balances[account];
   }
 
@@ -260,7 +260,7 @@ contract Rollex is IERC20, Ownable {
     IERC20(con_address).transfer(to, amount);
   }
 
-  uint256 public rollex_rate = 0.00025e6;
+  uint256 public rollex_rate = 250;
 
   uint256 public distribute_level = 25;
 
@@ -309,7 +309,8 @@ contract Rollex is IERC20, Ownable {
   mapping(uint256 => User) public userRegister;
   mapping(address => uint256) public addressToUserId;
   mapping(address => bool) public isRegistered;
-  mapping(address=>LevelIncomeHistory[]) private levelHistoryInfo;
+  mapping(address=>LevelIncomeHistory[]) public levelHistoryInfo;
+  
   function register(address refer_address) public returns (uint256 custid) {
     require(refer_address != msg.sender, "Cannot refer yourself");
     require(!isRegistered[msg.sender], "User is already registered");
@@ -348,23 +349,24 @@ contract Rollex is IERC20, Ownable {
     require(buyAmt <= 1250e6 , "Maximum buy limit 1250 USDT");
     require(usdt.balanceOf(msg.sender) >= buyAmt , "Insufficient USDT balance");
 
-    console.log("buyAmt*1*6", buyAmt.mul(1e6));
-    uint256 rollex = buyAmt.mul(1e6).div(rollex_rate);
-    console.log("Rollex_rate", rollex_rate);
+    // console.log("buyAmt*1*6", buyAmt.mul(1e6));
+    // console.log("Rollex_rate", rollex_rate);
+    uint256 buyAmtInUSDT = buyAmt.mul(1e6);
+    uint256 rollex = buyAmtInUSDT.mul(1e18).div(rollex_rate);
     console.log("rollex", rollex);
 
     uint256 user_amt = rollex.mul(payoutPercent).div(100);
-    console.log("user_amt", user_amt);
+    // console.log("user_amt", user_amt);
 
     uint256 refer_amt = user_amt.mul(directPercent).div(100);
-    console.log("refer_amt", refer_amt);
+    // console.log("refer_amt", refer_amt);
 
     uint256 admin_amt = user_amt.mul(adminPercent).div(100);
-    console.log("admin_amt", admin_amt);
+    // console.log("admin_amt", admin_amt);
     totalCollection = totalCollection + buyAmt;
-    console.log("totalCollection", totalCollection);
+    // console.log("totalCollection", totalCollection);
     // console.log("usdt", usdt);
-    console.log("sender balance", usdt.balanceOf(msg.sender));
+    // console.log("sender balance", usdt.balanceOf(msg.sender));
     // IERC20(usdt).approve(msg.sender, buyAmt);
     usdt.safeTransferFrom(msg.sender, address(this), buyAmt);
 
@@ -410,6 +412,13 @@ contract Rollex is IERC20, Ownable {
             uint256 refer_per = refer_amt.mul(levelPercentages[i]).div(100);
 
             _balances[currentReferrer] = _balances[currentReferrer].add(refer_per);
+            levelHistoryInfo[currentReferrer].push(LevelIncomeHistory({
+                customer_address: currentReferrer,
+                buyAddress: msg.sender,
+                tokenAmount: rollex,
+                level: i,
+                timestamp: block.timestamp
+            }));
             emit Transfer(address(0), currentReferrer, refer_per);
             total_dis += refer_per;
             userRegister[nextId].level_income = userRegister[nextId].level_income.add(refer_per);
@@ -422,7 +431,12 @@ contract Rollex is IERC20, Ownable {
 
     totalMint = totalMint + user_amt + total_dis + admin_amt;
     _totalSupply = _totalSupply + user_amt + total_dis + admin_amt;
-    rollex_rate = address(this).balance.mul(1 ether).div(_totalSupply);
+    uint256 rollexBalance = usdt.balanceOf(address(this));
+    // console.log("rollexBalance", rollexBalance);
+    // console.log("_totalSupply", _totalSupply);
+    // console.log("before rollex_rate buy", rollex_rate) ; 
+    rollex_rate = rollexBalance.mul(1e18).div(_totalSupply);  
+    // console.log("after rollex_rate buy", rollex_rate) ; 
 
     id = ++buyId;
     buyRecord[id].cust_address = msg.sender;
@@ -440,21 +454,29 @@ function sellRollex(uint256 tokenAmount) public returns (uint256 id) {
     require(isRegistered[msg.sender], "User is not registered");
     require(tokenAmount > 0, "Token amount must be greater than 0");
     uint256 rollexPPOPer = tokenAmount.mul(1).div(100);
+    // console.log("rollexPPOper", rollexPPOPer);
+    // console.log("IERC20(token).balanceOf(msg.sender)", IERC20(token).balanceOf(msg.sender));
     require(IERC20(token).balanceOf(msg.sender) >= rollexPPOPer , "You need 1% Rollex pro tokens on withdrawal amount");
-
+    require(balanceOf(msg.sender) >= tokenAmount, "Rollex balance is low ");
     uint256 userId = addressToUserId[msg.sender];
     // Ensure the last sell operation was more than 24 hours ago
     require(userRegister[userId].last_ts + 1 days <= block.timestamp, "Sell operation can only be performed once every 24 hours");
 
-    uint256 usdtAmount = tokenAmount.mul(rollex_rate).div(1 ether);
+    // console.log("tokenAmount", tokenAmount);
+    // console.log("Rollex rate", rollex_rate);
+    uint256 usdtAmount = tokenAmount.mul(rollex_rate).div(1e18);
+    // console.log("usdtAmount", usdtAmount);
+
     uint256 adminServiceCharge = usdtAmount.mul(15).div(100); // 15% of usdtAmount
     usdtAmount = usdtAmount.sub(adminServiceCharge);
 
     // Check if the contract has enough USDT to proceed with the withdrawal
-    require(address(this).balance >= usdtAmount, "Not enough USDT in the contract to proceed with the withdrawal");
+    uint contractUSDTBal = usdt.balanceOf(address(this));
+    require(contractUSDTBal >= usdtAmount, "Not enough USDT in the contract to proceed with the withdrawal");
 
     // Ensure the usdtAmount is less than or equal to the total deposit of the user
     require(usdtAmount <= userRegister[userId].totalDeposit.mul(3), "Cannot withdraw more than 3x total deposit at a time");
+
 
     // Ensure the usdtAmount is greater than or equal to 1 USDT
     require(usdtAmount >= 1e6, "Minimum USDT  withdraw limit is 1");
@@ -468,8 +490,13 @@ function sellRollex(uint256 tokenAmount) public returns (uint256 id) {
     emit Transfer(msg.sender, address(0), tokenAmount); // Emit a transfer event to the zero address to signify burning
 
     // Send USDT to the user's address
-    payable(msg.sender).transfer(usdtAmount);
-    rollex_rate = address(this).balance.mul(1 ether).div(_totalSupply);
+    // payable(msg.sender).transfer(usdtAmount);
+    usdt.safeTransfer(msg.sender, usdtAmount);
+
+    uint256 rollexBalance = usdt.balanceOf(address(this));
+    rollex_rate = rollexBalance.mul(1e6).div(_totalSupply); 
+
+    // rollex_rate = address(this).balance.mul(1 ether).div(_totalSupply);
 
     // Update the last sell timestamp
     userRegister[userId].last_ts = block.timestamp;
@@ -487,5 +514,9 @@ function sellRollex(uint256 tokenAmount) public returns (uint256 id) {
     });
 
     return id;
+}
+
+function getLevelIncomeHistory(address _user) public view returns(LevelIncomeHistory[] memory) {
+    return levelHistoryInfo[_user];
 }
 }
