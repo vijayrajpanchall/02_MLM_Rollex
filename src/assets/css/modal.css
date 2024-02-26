@@ -1,0 +1,955 @@
+
+.modal{
+    z-index: 1000000;
+}
+
+header{
+    z-index: 9990 !important;
+}
+
+.desktop-only .modal-header{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.mobile-only .modal-header a{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    text-decoration: none;
+
+}
+.mobile-only .modal-header h5{
+    color: #76818B;
+    margin-left: 20px;
+    
+}
+.modal-header{
+    border: none;
+}
+.modal-content .mobile-only{
+    z-index: 100000000000000;
+}
+.modal-content .desktop-only{
+    z-index: 100000000000000;
+}
+
+.modal-body{
+    z-index: 100000000;
+}
+
+/* WITHDRAW */
+
+.withdraw-background{
+    background: linear-gradient(159.02deg, #0F123B 14.25%, #090D2E 56.45%, #020515 86.14%);;
+}
+.withdraw-background .b-image{
+    width: 500px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    opacity: .5;
+}
+
+.withdraw-details{
+    color: #FFFFFF;
+    margin-bottom: 40px;
+}
+
+.withdraw-body{
+    display: flex;
+    align-items: center;
+}
+
+.withdraw-data{
+    display: flex;
+    align-items: center;
+    margin: 1.5em 0;
+}
+.withdraw-data div{
+    margin-right: 30px;
+}
+
+.withdraw-data h4{
+    font-family: 'Oxanium-Regular';
+    font-size: 14px;
+}
+
+.withdraw-data p {
+    color: #F7B35D;
+    font-size: 12px;
+}
+
+
+
+.withdraw-body .container-fluid{
+    padding: 0 10%;
+}
+.action-amount{
+    justify-content: center;
+    position: relative;
+    display: flex;    
+    height: 110px;
+    align-items: center;
+    width: 100%;
+    border: 1px solid #0885f2;
+    border-radius: 15px;  
+    background: linear-gradient(159.02deg, #4b1f5f 14.25%, #2c1f64 56.45%, #0c031c 86.14%);
+}
+.action-amount img{
+    width: 100%;
+    height: 135px;
+}
+
+.action-amount div{
+    position: absolute;
+    text-align: center;
+}
+.withdraw-action p {
+    line-height: 18px;
+    margin: 10px 0;
+    font-size: 10px;
+    color: #FFFFFF;
+    background: #0101015e;
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.action-amount h2{
+    font-size: 16px;
+    letter-spacing: 0.5px;
+}
+.withdraw-action{
+    width: 100%;
+}
+
+.action-amount h3{
+    font-size: 30px;
+    color: #FFFFFF;
+    line-height: 30px;
+}
+.bottom{
+    display: flex;
+    align-items: flex-end;
+}
+.w-confirm{
+    background-color: #2196F3;
+    border-radius: 8px;
+    padding: 10px 0px 5px 0px;
+    color: #fff;
+}
+
+.w-cancel{
+    background: rgb(255 255 255 / 12%);
+    padding:10px 20px;
+    color: #FFFFFF;
+}
+
+.action{
+    display: flex;
+    margin-top: 10px;
+    justify-content: space-between;
+}
+
+.action button{
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    width: 48%;
+    font-family: 'Oxanium-Bold';
+}
+
+
+/* WITHDRAW */
+
+/* DEPOSIT */
+.deposit-background{
+    background: linear-gradient(159.02deg, #0F123B 14.25%, #090D2E 56.45%, #020515 86.14%);;
+}
+.deposit-background .b-image{
+
+    width: 30%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    opacity: .5;
+}
+
+.deposit-body{
+    display: flex;
+    align-items: center;
+}
+
+.deposit-body .container-fluid{
+    padding: 0 10%;
+}
+
+.deposit-data{
+    margin: 30px 0;
+    display: flex;
+    align-items: center;
+}
+
+.deposit-data h1{
+    color: #FFFFFF;
+    font-size: 26px;
+}
+
+.deposit-data h4{
+    font-family: 'Oxanium-Regular';
+    font-size: 14px;
+}
+.deposit-data p{
+    color: #76818B;
+    font-size: 12px;
+}
+
+.deposit-data .note{
+    margin-top: 20px;
+    color: #FFFFFF;
+}
+
+.d-confirm{
+    background-color: #2196F3;
+    border-radius: 8px;
+    padding:20px;
+    color: #fff;
+}
+
+.d-cancel{
+    background: #ad840a;
+    padding:20px 20px;
+    color: #FFFFFF;
+    margin-bottom: 20px;
+}
+
+.deposit-amount input {
+    color: #FFFFFF;
+    background: transparent;
+    margin: 10px 0;
+    width: 100%;
+    height: 39px;
+    /* border-radius: 8px; */
+    border: none;
+    border-bottom: 1px solid #FFFF;
+    font-family: 'Oxanium-Regular';
+}
+
+.deposit-amount input::placeholder{
+    color: #FFFFFF;
+}
+
+.deposit-amount input:focus{
+    outline: none;
+    border-bottom: 2px solid #34D178;
+}
+
+.deposit-details button{
+    border: none;
+    border-radius: 8px;
+    font-size: 20px;
+    width: 48%;
+    font-family: 'Oxanium-Bold';
+}
+
+.d-buttons{
+    text-align: center;
+}
+
+.cycle{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    margin: 10px 0;
+    border-radius: 8px;
+}
+
+.cycle h2{
+    font-size: 18px;
+}
+
+.deposit-cycle{
+    padding: 5px;
+    background: rgba(81, 120, 232, 0.2);
+    box-shadow: 0px 16px 16px rgba(0, 0, 0, 0.16);
+    border-radius: 16px;
+    margin: 20px 0;
+}
+.deposit-details
+{
+    margin-bottom: 40px;
+}
+.deposit-detail{
+    text-align: justify;
+    
+}
+.deposit-details p{
+    color: #76818B;
+    font-size: 12px;
+    margin-bottom: 20px;
+}
+
+.d-orange{
+    background: linear-gradient(273.19deg, #372222 0%, #c98908 100%, #F0C259 100%);
+}
+.d-blue{
+    background: linear-gradient(273.19deg, #14161c 0%, #224773 100%);
+}
+.d-pink{
+    background: linear-gradient(273.19deg, #2a142b 0%, #0a010a 100%);
+}
+.d-violet{
+    background: linear-gradient(273.19deg, #7c60a9 0%, #3f3030 100%);
+}
+.d-red-pink{
+    background: linear-gradient(273.19deg, #120209 0%, #141111 100%);
+}
+.d-blue-pink{
+    background: linear-gradient(273.19deg, #061a87 0%, #971080 100%);
+}
+/* DEPOSIT */
+
+/* SPLIT */
+.split-body{
+    display: flex;
+    align-items: center;
+}
+
+.split-body .container-fluid{
+    padding: 0 10%;
+}
+
+.split-background{
+    background: linear-gradient(159.02deg, #0F123B 14.25%, #090D2E 56.45%, #020515 86.14%);;
+}
+
+.split-background .b-image{
+
+    width: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    opacity: .5;
+    height: 100%;
+}
+
+.split-deposit-header {
+    background: #002785;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.split-deposit-body{
+    padding: 20px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    background:linear-gradient(298.02deg, #0538C2 0%, #76B2FD 100%);
+}
+
+.split-details h1{
+    color: #FFFFFF;
+    font-size: 24px;
+    margin-bottom: 0;
+}
+
+.split-deposit{
+    padding: 0;
+}
+
+.split-details h4{
+    margin-top: 10px;
+    font-size: 14px;
+    font-family: 'Oxanium-Regular';
+}
+
+.split-deposit-body div{
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.split-details input{
+    padding: 0 10px;
+    width: 100%;
+    border-radius: 3px;
+    border: none;
+    height: 30px;
+    font-family: 'Oxanium-Regular';
+    font-size: 10px;
+}
+
+.split-deposit-body img{
+    height: 20px;
+    margin: 0 5px;
+}
+
+
+.split-details h2{
+    font-size: 16px;
+}
+
+.split-details p {
+    font-family: 'Oxanium-Regular';
+    font-size: 10px;
+    color: #FFFFFF;
+    margin-top: 5px;
+}
+
+.split-details button {
+    font-family: 'Oxanium-Bold';
+    font-size: 10px;
+    color: #000000;
+    margin-top: 5px;
+    padding: 8px 30px;
+    background-color: #2196F3;
+    border: none;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.btn-right{
+    display: block  !important;
+    text-align: right;
+}
+
+.split-transfer{
+    padding: 0;
+    margin-top: 10px;
+}
+
+.split-transfer-body{
+    border-radius: 8px;
+    background: linear-gradient(273.19deg, #3D00A0 0%, #9E70EA 100%);
+    padding: 20px;
+}
+
+.split-transfer-body div{
+    display: flex;
+    align-items: center;
+}
+
+.split-transfer-body img{
+    height: 20px;
+    margin: 5px;
+}
+
+.split-guess-header {
+    background: linear-gradient(273.19deg, #ED6A05 0%, #F0C259 100%, #F0C259 100%);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    padding: 13px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.split-guess{
+    height: 100%;
+    padding: 0;
+    margin-left: 10px;
+}
+
+.split-guess-body{
+    height: 100%;
+    padding: 20px;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), linear-gradient(360deg, rgba(240, 194, 89, 0.2) 0%, rgba(240, 194, 89, 0.2) 100%);
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.split-guess-body img{
+    width: 200px;
+    margin: 50px 0;
+}
+
+.detail-guess{
+    text-align: center;
+}
+
+.detail-draw{
+    margin-top: 15px;
+}
+.detail-guess h3{
+    font-size: 10px;
+    color: #E67DEB;
+}
+
+.split-distribution{
+    padding: 5px 0;
+}
+
+.split-distribution h5{
+    font-family: 'Oxanium-Bold';
+    font-size: 12px;
+    margin-bottom: 5px;
+
+}
+
+.text-b{
+    color: #F0C259;
+}
+
+.distribution-detail{
+    border-radius: 10px;
+    border: 2px solid rgba(240, 194, 89, 0.16);
+    background: rgba(240, 194, 89, 0.14);
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 10px;
+    margin-bottom: 5px;
+}
+
+.distribution-detail h3{
+    font-size: 12px;
+    color: #FFFFFF;
+}
+.split-bet{
+    margin-top: 10px;
+}
+
+.bet-detail{
+    
+    border-radius: 10px;
+    background:rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 10px;
+    margin-bottom: 5px;
+    align-items: center;
+}
+
+.bet-detail img{
+    height: 20px;
+    width: auto;
+    margin: 5px;
+}
+.bet-detail div{
+    display: flex;
+    align-items: center;
+}
+.bet-detail h3{
+    font-size: 10px;
+    color: #FFFFFF;
+}
+.bet-detail-list{
+    overflow-y: scroll;
+    height: 140px;
+}
+
+.bet-times{
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    background: #2196F3;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+/* SPLIT */
+
+
+/* INVITER */
+.invite-body{
+    border-radius: 6px;
+    padding: 20px 10px;
+    text-align: center;
+    background: linear-gradient(180deg, #bb1f87 0%, #2c1d5b 100%);
+}
+.invite-body img{
+    width: 100%;
+}
+
+.invite-body input{
+    padding: 0 10px;
+    width: 100%;
+    border-radius: 3px;
+    border: none;
+    height: 30px;
+    font-family: 'Oxanium-Regular';
+    font-size: 10px;
+}
+.invite-body p{
+    font-size: 10px;
+    font-family: 'Oxanium-Regular';
+    color: #fff;
+}
+.invite-body .container-fluid div{
+    margin: 10px 0; 
+}
+
+.i-confirm{
+    background-color: #2196F3;
+    border-radius: 8px;
+    padding:10px 20px;
+    color: #000000;
+}
+
+.i-cancel{
+    background: rgb(255 255 255 / 12%);
+    padding:10px 20px;
+    color: #FFFFFF;
+}
+
+.invite-body button{
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    width: 48%;
+    font-family: 'Oxanium-Bold';
+}
+/* INVITER */
+
+/* RENEW */
+
+.renew-body{
+    border-radius: 6px;
+    padding: 20px;
+    text-align: center;
+    background: linear-gradient(180deg, #bb1f87 0%, #2c1d5b 100%);
+}
+.renew-body h2{
+    text-transform: uppercase;
+}
+.renew-body img{
+    width: 50%;
+    margin: 40px 0;
+}
+
+.renew-body input{
+    padding: 0 10px;
+    width: 100%;
+    border-radius: 3px;
+    border: none;
+    height: 30px;
+    font-family: 'Oxanium-Regular';
+    font-size: 10px;
+}
+
+.renew-body .container-fluid div{
+    margin-top: 20px;
+}
+
+.renew-body button{
+    width: 40%;
+}
+
+.i-confirm{
+    background-color: #2196F3;
+    border-radius: 8px;
+    padding:10px 20px;
+    color: #000000;
+}
+
+.i-cancel{
+    background: rgb(255 255 255 / 12%);
+    padding:10px 20px;
+    color: #FFFFFF;
+}
+
+.renew-body button{
+    border: none;
+    border-radius: 8px;
+    font-size: 10px;
+    width: 40%;
+    font-family: 'Oxanium-Bold';
+}
+
+.renew-body p {
+    color: #FFFFFF;
+    font-size: 10px;
+    margin: 20px 0;
+}
+
+/* congrats */
+
+.congrats-body{
+    position: relative;
+    border-radius: 6px;
+    padding: 20px;
+    text-align: center;
+    background: linear-gradient(180deg, #3461FF 0%, #8454EB 100%);
+}
+
+.congrats-body .container-fluid img{
+    height: 350px;
+    opacity: .9;
+    right: 20px;
+    position: absolute;
+    /* display: flex; */
+    bottom: 0;
+    z-index: -1;
+    opacity: .5;
+    top: 50px;
+    transform: rotate(39deg);
+    
+}
+/* .congrats-body img{
+
+} */
+
+.congrats-text{
+    text-align: left;
+
+}
+
+.congrats-text p{
+    font-size: 12px !important;
+}
+.congrats-rule{
+    border-radius: 8px;
+    background: #2626266b;
+    margin: 20px 0;
+    padding: 20px;
+    text-align: justify;
+    height: 150px;
+    overflow-y: scroll;
+}
+
+.congrats-rule b{
+    font-size: 14px  !important;
+}
+
+.congrats-rule p{
+    line-height: 20px;
+    font-size: 10px !important;
+    margin-bottom: 20px !important;
+}
+
+
+.congrats-body input{
+    padding: 0 10px;
+    width: 100%;
+    border-radius: 3px;
+    border: none;
+    height: 30px;
+    font-family: 'Oxanium-Regular';
+    font-size: 10px;
+}
+
+
+.congrats-body .container-fluid div{
+    margin-top: 20px;
+}
+
+.renew-body button{
+    width: 40%;
+}
+
+.i-confirm{
+    background-color: #2196F3;
+    border-radius: 8px;
+    padding:10px 20px;
+    color: #000000;
+}
+
+.i-cancel{
+    background: rgb(255 255 255 / 12%);
+    padding:10px 20px;
+    color: #FFFFFF;
+}
+
+.congrats-body button{
+    border: none;
+    border-radius: 8px;
+    font-size: 10px;
+    width: 40%;
+    font-family: 'Oxanium-Bold';
+}
+
+.congrats-body p {
+    color: #FFFFFF;
+    font-size: 10px;
+    margin-bottom: 30px;
+}
+
+/* Triggred */
+
+
+.trigger-body{
+    position: relative;
+    border-radius: 6px;
+    padding: 20px;
+    text-align: center;
+    background: linear-gradient(180deg, #3461FF 0%, #8454EB 100%);
+}
+
+.trigger-body .container-fluid img{
+    right: 20px;
+    width: auto;
+    height: 400px;
+    transform: rotate(313deg);
+    position: absolute;
+    /* display: flex; */
+    /* bottom: 0; */
+    z-index: -1;
+}
+/* .trigger-body img{
+
+} */
+
+.trigger-text{
+    text-align: left;
+
+}
+
+.trigger-text p{
+    font-size: 12px !important;
+}
+.trigger-rule{
+    border-radius: 8px;
+    background: #2626266b;
+    margin: 10px 0;
+    padding: 20px;
+    text-align: justify;
+    height: 150px;
+    overflow-y: scroll;
+    margin-bottom: 30px;
+}
+
+.trigger-rule b{
+    font-size: 14px  !important;
+}
+
+.trigger-rule p{
+    line-height: 20px;
+    font-size: 10px !important;
+    margin-bottom: 20px !important;
+}
+
+.rule{
+    margin-top: 10px !important;
+    border-radius: 8px;
+    background: #2626266b;
+    margin: 10px 0;
+    padding: 20px;
+    text-align: justify;
+    height: 150px;
+    overflow-y: scroll;
+    margin-bottom: 2em;;
+}
+.rule p{
+    font-size: 10px !important;
+    line-height: 20px;
+}
+.rule b{
+    font-size: 14px;
+}
+
+.trigger-body input{
+    padding: 0 10px;
+    width: 100%;
+    border-radius: 3px;
+    border: none;
+    height: 30px;
+    font-family: 'Oxanium-Regular';
+    font-size: 18px;
+    border: none;
+    border-bottom: 1px solid #FFFFFF;
+    background-color: transparent;
+    width: 100%;
+    color: #a3a3a3;
+    text-align: center;
+}
+
+.trigger-body input:focus{
+    outline: none;
+    border-bottom: 2px solid #34D178;
+
+}
+
+.trigger-body input::placeholder{
+    color: #FFFFFF;
+    font-size: 18px;
+    text-align: center;
+}
+
+
+.trigger-body .container-fluid div{
+    margin-top: 10px;
+}
+
+.trigger-amount {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.renew-body button{
+    width: 40%;
+}
+
+.i-confirm{
+    background-color: #2196F3;
+    border-radius: 8px;
+    padding:10px 20px;
+    color: #fff;
+}
+
+.i-cancel{
+    background: rgb(255 255 255 / 12%);
+    padding:10px 20px;
+    color: #f38d07;
+}
+
+.trigger-body button{
+    border: none;
+    border-radius: 8px;
+    font-size: 10px;
+    width: 40%;
+    font-family: 'Oxanium-Bold';
+}
+
+.trigger-body p {
+    color: #FFFFFF;
+    font-size: 10px;
+    margin-bottom: 10px;
+}
+@media only screen and (max-width: 600px) {
+    .modal{
+        padding-top: 100px;
+    }
+    .modal-header{
+        background-color: #161A42;
+    }
+    .withdraw-data h2{
+        font-size: 16px;
+    }
+    .withdraw-body{
+        display: block;
+    }
+    .deposit-body{
+        display: block;
+    }
+    .split-body{
+        display: block;
+    }
+    .split-guess{
+        margin-top: 10px;
+        margin-left: 0;
+    }
+    .withdraw-background .b-image{
+        width: 350px;
+    }
+    .deposit-background .b-image{
+        width: 100%;
+    }
+    
+}
+
+@media only screen and (max-width: 767px) and (min-width: 601px){
+    .split-guess{
+        margin-top: 10px;
+        margin-left: 0;
+    }
+    .split-body{
+        display: block;
+    }
+}

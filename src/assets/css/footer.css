@@ -1,0 +1,25 @@
+footer{
+    background-color: #0F0D28;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: flex-end;
+    /* position: absolute;
+    bottom: 0;
+    width: 100%; */
+}
+footer p{
+    margin-top: 0 !important;
+    font-family: 'Oxanium-Regular';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 150%;
+    letter-spacing: .5px;
+    color: #FFFFFF;
+}
+
+@media only screen and (max-width: 600px) {
+    footer{
+        justify-content: center;
+    }
+}

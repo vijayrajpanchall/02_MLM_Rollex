@@ -1,0 +1,167 @@
+/* MAIN START */
+main {
+    padding: 0 40px !important;
+}
+
+section{
+    padding: 20px 0;
+}
+
+.sec-welcome-infos h1{
+    color: #FFFFFF;
+    font-size: 26px;
+}
+
+.background-orange{
+    background: transparent;
+    
+    border-image: linear-gradient(#ED6A05, #F0C259) 1;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 16px;
+}
+.background-pink{
+    background: linear-gradient(273.19deg, #87008D 0%, #E67DEB 100%);
+    border-radius: 16px;
+
+}
+.background-blue{
+    background: linear-gradient(273.19deg, #0032BF 0%, #7BB8FF 100%);
+    border-radius: 16px;
+}
+.background-violet{
+    background: linear-gradient(273.19deg, #3D00A0 0%, #9E70EA 100%);
+    border-radius: 16px;
+}
+
+
+.team-info{
+    padding: 25px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 15px
+}
+
+.team-info h3{
+    color: #FFFFFF;
+    font-size: 14px;
+}
+
+.team-info h2{
+    color: #FFFFFF;
+    font-size: 20px;
+}
+
+.sec-requirement-infos{
+    margin-top: 20px;
+    text-align: center;
+}
+
+.sec-requirement-infos h2{
+    color: #34D178;
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.sec-requirement-infos p{
+    color: #FFFFFF;
+    font-size: 12px;
+}
+
+.requirement-hero{
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+.requirement-hero img{
+    width: 100%;
+    height: 150px;
+    opacity: .5;
+}
+
+.requirement-text{
+    z-index: 1;
+    left: 5%;
+    position: absolute;
+    text-align: justify;
+}
+
+.requirement-hero h4{
+    color: #FFFFFF;
+    font-size: 16px;
+}
+
+.requirement-hero h3{
+    color: #FFFFFF;
+    font-size: 26px;
+    line-height: 28px;
+}
+
+.requirement-star{
+    align-items: center;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.requirement-star h1{
+}
+
+.star-images img{
+    height: 100px;
+    margin: 0 10px;
+}
+
+.star-images{
+    display: flex;
+    justify-content: center;
+    
+}
+.requirement-info{
+    text-align: left;
+    display: flex;
+}
+
+.requirement-detail{
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+
+   
+}
+.requirement-label{
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    
+    
+}
+
+.requirement-label p{
+    margin: 10px;
+}
+
+.requirement-detail p{
+    margin: 10px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.requirement-star h1{
+    color: #FFFFFF;
+    font-size: 28px;
+    margin-bottom: 0;;
+}
+
+.requirement-star div h1{
+    margin-top: 20px;
+}
+@media only screen and (max-width: 600px) {
+    .requirement-detail{
+        width: 100%;
+    }
+    .requirement-detail p{
+        font-size: 13px;
+    }
+}
