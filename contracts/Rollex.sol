@@ -89,7 +89,7 @@ contract Ownable {
   }
 }
 
-import "hardhat/console.sol";
+// import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 contract Rollex is IERC20, Ownable {
   using SafeERC20 for IERC20;
@@ -351,9 +351,9 @@ contract Rollex is IERC20, Ownable {
 
     // console.log("buyAmt*1*6", buyAmt.mul(1e6));
     // console.log("Rollex_rate", rollex_rate);
-    uint256 buyAmtInUSDT = buyAmt.mul(1e6);
-    uint256 rollex = buyAmtInUSDT.mul(1e18).div(rollex_rate);
-    console.log("rollex", rollex);
+    // uint256 buyAmtInUSDT = buyAmt.mul(1e6);
+    uint256 rollex = buyAmt.mul(1e18).div(rollex_rate);
+    // console.log("rollex", rollex);
 
     uint256 user_amt = rollex.mul(payoutPercent).div(100);
     // console.log("user_amt", user_amt);
@@ -460,7 +460,7 @@ function sellRollex(uint256 tokenAmount) public returns (uint256 id) {
     require(balanceOf(msg.sender) >= tokenAmount, "Rollex balance is low ");
     uint256 userId = addressToUserId[msg.sender];
     // Ensure the last sell operation was more than 24 hours ago
-    require(userRegister[userId].last_ts + 1 days <= block.timestamp, "Sell operation can only be performed once every 24 hours");
+    // require(userRegister[userId].last_ts + 1 days <= block.timestamp, "Sell operation can only be performed once every 24 hours");
 
     // console.log("tokenAmount", tokenAmount);
     // console.log("Rollex rate", rollex_rate);
@@ -494,7 +494,7 @@ function sellRollex(uint256 tokenAmount) public returns (uint256 id) {
     usdt.safeTransfer(msg.sender, usdtAmount);
 
     uint256 rollexBalance = usdt.balanceOf(address(this));
-    rollex_rate = rollexBalance.mul(1e6).div(_totalSupply); 
+    rollex_rate = rollexBalance.mul(1e18).div(_totalSupply); 
 
     // rollex_rate = address(this).balance.mul(1 ether).div(_totalSupply);
 

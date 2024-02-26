@@ -1,14 +1,5 @@
-/**
- *Submitted for verification at BscScan.com on 2023-11-06
-*/
-
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
-
-interface IERC20 {
-  function balanceOf(address account) external view returns(uint256);
-  function transfer(address recipient, uint256 amount) external returns(bool);
-}
 
 library SafeMath {
   function mul(uint256 a, uint256 b) internal pure returns(uint256) {
@@ -66,12 +57,14 @@ contract Ownable {
   }
 }
 
-
-contract LiquidityManagerRLXT is IERC20, Ownable {
+import "hardhat/console.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+contract LiquidityManagerRLXT is Ownable {
 
   using SafeMath for uint256;
-
+  using SafeERC20 for IERC20;
   IERC20 public token;
+  IERC20 public usdt;
   uint256 public rlxt_rate;
 
   uint256 public customerId;
@@ -86,7 +79,7 @@ contract LiquidityManagerRLXT is IERC20, Ownable {
 
   struct Buyhistory {
       address cust_address;
-      uint256 bnb_amt;
+      uint256 usd_amt;
       uint256 token_to_user;
   }
 
@@ -96,22 +89,17 @@ contract LiquidityManagerRLXT is IERC20, Ownable {
   mapping(address => uint256) public addressToUserId;
   mapping(address => bool) public isRegistered;
 
-  constructor(address token_address) {
+  constructor(address token_address, address _usd) {
     token = IERC20(token_address);
+    usdt = IERC20(_usd);
     isRegistered[address(this)] = true;
-    rlxt_rate = 0.001 ether;
+    rlxt_rate = 1000;
   }
 
-  function balanceOf(address account) external view override returns(uint256) {
-  // implementation of the balanceOf function
-  }
 
-  function transfer(address recipient, uint256 amount) external override returns(bool) {
-  // implementation of the transfer function
-  }
-
-  function withdrawCollection(address payable recevier, uint256 amount) public onlyOwner {
-    recevier.transfer(amount);
+  function withdrawCollection(address recevier, uint256 amount) public onlyOwner {
+    require(usdt.balanceOf(address(this)) >= amount, "Insufficient balance");
+    usdt.transfer(recevier, amount);
   }
 
   function register() public returns (uint256 custid) {
@@ -129,22 +117,24 @@ contract LiquidityManagerRLXT is IERC20, Ownable {
   }
 
 
-  function BuyRlxt () payable public returns (uint256 id) {
+  function BuyRlxt (uint usd_amount) public returns (uint256 id) {
     require(isRegistered[msg.sender], "User is not registered.");
 
-    uint256 token_amt = msg.value.mul(1 ether).div(rlxt_rate);
-
+    uint256 token_amt = usd_amount.mul(1 ether).div(rlxt_rate);
+    console.log("token_amt", token_amt / 10**18);
+    console.log("rollex Rate", rlxt_rate);
     require(IERC20(token).balanceOf(address(this)) >= token_amt, "Unable to buy RLXT.");
 
+    usdt.safeTransferFrom(msg.sender, address(this), usd_amount);
     IERC20(token).transfer(msg.sender, token_amt);
 
     id = ++buyId;
     buyRecord[id].cust_address = msg.sender;
-    buyRecord[id].bnb_amt = msg.value;
+    buyRecord[id].usd_amt = usd_amount;
     buyRecord[id].token_to_user = token_amt;
 
     uint256 userId = addressToUserId[msg.sender];
-    userRegister[userId].totalDeposit += msg.value;
+    userRegister[userId].totalDeposit += usd_amount;
     userRegister[userId].token_from_sc += token_amt;
   }
 
@@ -152,16 +142,16 @@ contract LiquidityManagerRLXT is IERC20, Ownable {
      rlxt_rate = new_rate;
   }
 
-  function bnbAmount() public view returns(uint256) {
-     return address(this).balance;
+  function usdAmount() public view returns(uint256) {
+     return usdt.balanceOf(address(this));
   }
 
-  function update_sellvalue(address user_address, uint256 token_amt, uint256 bnb_amt) public onlyOwner {
+  function update_sellvalue(address user_address, uint256 token_amt, uint256 usd_amount) public onlyOwner {
     require(isRegistered[user_address], "User is not registered.");
 
     uint256 userId = addressToUserId[user_address];
     userRegister[userId].token_from_sc -= token_amt;
-    userRegister[userId].totalWithdraw += bnb_amt;
+    userRegister[userId].totalWithdraw += usd_amount;
   }
 
 }
